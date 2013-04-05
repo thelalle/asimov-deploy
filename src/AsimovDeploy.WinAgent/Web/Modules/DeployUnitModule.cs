@@ -63,10 +63,18 @@ namespace AsimovDeploy.WinAgent.Web.Modules
                 var deployUnit = config.GetUnitByName((string)urlArgs.unitName);
                 if (deployUnit == null)
                     return 404;
+                
+                var info = deployUnit.GetUnitInfo();
+                var needsInstall = info.Status == UnitStatus.NotFound;
 
                 var parameters = new List<dynamic>();
-                foreach (var deployParameter in deployUnit.DeployParameters)
-                    parameters.Add(deployParameter.GetDescriptor());
+                foreach (var deployParameter in deployUnit.DeployParameters) 
+                {
+                	if (deployParameter.IsInstallParameter && !needsInstall)
+                		continue;
+                	
+                	parameters.Add(deployParameter.GetDescriptor());
+                }   
 
                 return Response.AsJson(parameters);
             };

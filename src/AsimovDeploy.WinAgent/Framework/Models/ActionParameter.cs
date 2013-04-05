@@ -21,9 +21,24 @@ namespace AsimovDeploy.WinAgent.Framework.Models
     public abstract class ActionParameter
     {
         public string Name { get; set; }
+        
+        public ActionParameterType Mode { get; set; }
 
         public abstract dynamic GetDescriptor();
 
         public abstract void ApplyToPowershellScript(StringBuilder script, dynamic value);
+        
+        public ActionParameter()
+        {
+        	Mode = ActionParameterType.Deploy;
+        }
+        
+        public bool IsInstallParameter { get { return Mode == ActionParameterType.Install; } }
+    }
+    
+    public enum ActionParameterType 
+    {
+    	Install,
+    	Deploy
     }
 }
